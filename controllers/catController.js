@@ -2,7 +2,6 @@
 // catController
 const catModel = require('../models/catModel');
 
-const cats = catModel.cats;
 
 const cat_list_get = async (req, res) => {
   const cats = await catModel.getAllCats();
@@ -20,7 +19,7 @@ const cat_create_post = async (req, res) => {
   const {name, age, weight, owner} = req.body;
   const params = [name, age, weight, owner, req.file.filename];
   const cat = await catModel.addCat(params);
-  res.send(cat);
+  res.json({message: 'Upload ok'});
 };
 
 module.exports = {
