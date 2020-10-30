@@ -19,7 +19,7 @@ const user_create_post = async (req, res) => {
   const params = [name, email, passwd];
   console.log(params);
   const user = await userModel.addUser(params);
-  res.json({message: 'Upload ok'});
+  res.json({message: 'User create ok'});
 };
 
 module.exports = {
