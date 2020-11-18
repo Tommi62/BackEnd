@@ -27,7 +27,7 @@ router.get('/', catController.cat_list_get);
 
 router.get('/:id', catController.cat_get);
 
-router.post('/', upload.single('cat'), injectFile, [
+router.post('/', upload.single('cat'), injectFile, catController.make_thumbnail, [
   body('name', 'Vaadittu kenttä').isLength({min: 1}),
   body('age', 'Ikä numerona!').isLength({min: 1}).isNumeric(),
   body('weight', 'Paino numerona!').isLength({min: 1}).isNumeric(),

@@ -2,7 +2,8 @@
 // catController
 const { validationResult } = require('express-validator');
 const catModel = require('../models/catModel');
-
+const {makeThumbnail} = require('../utils/resize');
+const imageMeta = require('../utils/imageMeta');
 
 const cat_list_get = async (req, res) => {
   const cats = await catModel.getAllCats();
@@ -21,8 +22,18 @@ const cat_create_post = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
+  let coords = [];
+  try{
+    coords = await imageMeta.getCoordinates(req.file.path);
+  } catch(e){
+    console.log('Ei geepeeässäää!');
+    coords = [60,20];
+  }
+
+
+
   const {name, age, weight, owner} = req.body;
-  const params = [name, age, weight, owner, req.file.filename];
+  const params = [name, age, weight, owner, req.file.filename, coords];
   const cat = await catModel.addCat(params);
   res.json({message: 'Upload ok'});
 };
@@ -46,10 +57,22 @@ const cat_delete = async (req, res) => {
   res.json(cat);
 };
 
+const make_thumbnail = async (req, res, next) => {
+  try {
+    const kuvake = await makeThumbnail(req.file.path, req.file.filename);
+    if (kuvake) {
+      next();
+    }
+  }catch(e){
+    res.status(400).json({ errors: errors.array() });
+  }
+};
+
 module.exports = {
   cat_list_get,
   cat_get,
   cat_create_post,
   cat_update_put,
   cat_delete,
+  make_thumbnail,
 };
